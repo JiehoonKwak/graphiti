@@ -435,10 +435,11 @@ class GraphitiEmbedderConfig(BaseModel):
 
         if google_api_key is not None:
             # Setup for Google Gemini API
+            embedding_model = os.environ.get('EMBEDDING_MODEL_NAME', 'gemini-embedding-001')
             return cls(
                 google_api_key=google_api_key,
                 api_key=google_api_key,  # For compatibility
-                model='text-embedding-001',  # Default Gemini embedding model
+                model=embedding_model,
             )
         elif azure_openai_endpoint is not None:
             # Setup for Azure OpenAI API
@@ -1250,8 +1251,8 @@ async def initialize_server() -> MCPConfig:
     parser.add_argument(
         '--transport',
         choices=['sse', 'stdio'],
-        default='sse',
-        help='Transport to use for communication with the client. (default: sse)',
+        default='stdio',
+        help='Transport to use for communication with the client. (default: stdio)',
     )
     parser.add_argument(
         '--model', help=f'Model name to use with the LLM client. (default: {DEFAULT_LLM_MODEL})'
@@ -1311,7 +1312,7 @@ async def run_mcp_server():
     # Initialize the server
     mcp_config = await initialize_server()
 
-    # Run the server with stdio transport for MCP in the same event loop
+    # Run the server with the specified transport for MCP in the same event loop
     logger.info(f'Starting MCP server with transport: {mcp_config.transport}')
     if mcp_config.transport == 'stdio':
         await mcp.run_stdio_async()
@@ -1320,6 +1321,9 @@ async def run_mcp_server():
             f'Running MCP server with SSE transport on {mcp.settings.host}:{mcp.settings.port}'
         )
         await mcp.run_sse_async()
+    else:
+        logger.error(f'Unknown transport: {mcp_config.transport}')
+        raise ValueError(f'Unsupported transport: {mcp_config.transport}')
 
 
 def main():

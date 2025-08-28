@@ -96,6 +96,7 @@ The server uses the following environment variables:
 **Model Configuration:**
 - `MODEL_NAME`: Model name to use for LLM operations (e.g., `gpt-4.1-mini` for OpenAI or `gemini-2.5-flash` for Gemini)
 - `SMALL_MODEL_NAME`: Small model name to use for lighter LLM operations (e.g., `gpt-4.1-nano` for OpenAI or `gemini-2.5-flash-lite-preview-06-17` for Gemini)
+- `EMBEDDING_MODEL_NAME`: Embedding model name (e.g., `text-embedding-3-small` for OpenAI or `gemini-embedding-001` for Gemini)
 - `LLM_TEMPERATURE`: Temperature for LLM responses (0.0-2.0)
 - `AZURE_OPENAI_ENDPOINT`: Optional Azure OpenAI LLM endpoint URL
 - `AZURE_OPENAI_DEPLOYMENT_NAME`: Optional Azure OpenAI LLM deployment name
@@ -214,6 +215,7 @@ The Graphiti MCP server supports Google Gemini as an alternative to OpenAI. To u
    GOOGLE_API_KEY=your_google_api_key_here
    MODEL_NAME=gemini-2.5-flash
    SMALL_MODEL_NAME=gemini-2.5-flash-lite-preview-06-17
+   EMBEDDING_MODEL_NAME=gemini-embedding-001
    
    # Neo4j configuration (same as before)
    NEO4J_URI=bolt://localhost:7687
@@ -233,7 +235,7 @@ The Graphiti MCP server supports Google Gemini as an alternative to OpenAI. To u
 
 The server will automatically detect the presence of `GOOGLE_API_KEY` and use Gemini for:
 - LLM operations (text generation, entity extraction)
-- Embeddings (text-embedding-001 model)
+- Embeddings (gemini-embedding-001 model)
 - Cross-encoding/reranking (using gemini-2.5-flash-lite-preview-06-17)
 
 **Note**: To get a Google API key, visit [Google AI Studio](https://aistudio.google.com/app/apikey) and create an API key for the Gemini API.

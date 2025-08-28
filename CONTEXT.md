@@ -45,7 +45,7 @@ Priority: GOOGLE_API_KEY → AZURE_OPENAI_ENDPOINT → OPENAI_API_KEY
 #### Model Defaults for Gemini
 - **Main Model**: `gemini-2.5-flash` (for LLM operations)
 - **Small Model**: `gemini-2.5-flash-lite-preview-06-17` (for reranking)
-- **Embedding Model**: `text-embedding-001` (Gemini's embedding model)
+- **Embedding Model**: `gemini-embedding-001` (Gemini's preferred embedding model)
 
 #### Cross-Encoder Integration
 - Added `create_cross_encoder_client()` method to LLM configuration
@@ -73,9 +73,27 @@ Priority: GOOGLE_API_KEY → AZURE_OPENAI_ENDPOINT → OPENAI_API_KEY
 - ✅ Backward compatibility maintained
 - ✅ Documentation updated
 - ✅ Testing completed successfully
-- 🎯 Ready for production use
+- ✅ Claude Code MCP integration configured
+- ✅ Transport issues resolved (STDIO as default)
+- ✅ User scope installation working
+- 🎯 Production ready and actively in use
+
+## Session Summary (2025-08-28)
+### Tasks Completed
+1. **Core Gemini Integration**: Replaced OpenAI with Gemini as primary LLM provider
+2. **Embedding Model Configuration**: Set gemini-embedding-001 as default embedding model
+3. **Claude Code Integration**: Provided complete setup instructions for MCP integration
+4. **Transport Optimization**: Changed default from SSE to STDIO to prevent port conflicts
+5. **User Experience**: Resolved installation and connection issues, cleaned up temporary files
+
+### User Feedback Addressed
+- Fixed import errors with graceful error handling
+- Resolved port 8000 conflicts by switching transport methods
+- Explained STDIO vs SSE differences in simple terms
+- Assisted with user scope installation issues
+- Removed unnecessary wrapper scripts per user request
 
 ## Next Steps
 - Monitor upstream Graphiti changes for integration
 - Consider contributing Gemini support back to upstream
-- Add more comprehensive testing if needed
+- Task completed successfully - no immediate next steps required
