@@ -87,11 +87,16 @@ The server uses the following environment variables:
 - `NEO4J_URI`: URI for the Neo4j database (default: `bolt://localhost:7687`)
 - `NEO4J_USER`: Neo4j username (default: `neo4j`)
 - `NEO4J_PASSWORD`: Neo4j password (default: `demodemo`)
-- `OPENAI_API_KEY`: OpenAI API key (required for LLM operations)
+
+**LLM Configuration (Choose one):**
+- `OPENAI_API_KEY`: OpenAI API key (for OpenAI LLM operations)
 - `OPENAI_BASE_URL`: Optional base URL for OpenAI API
-- `MODEL_NAME`: OpenAI model name to use for LLM operations.
-- `SMALL_MODEL_NAME`: OpenAI model name to use for smaller LLM operations.
-- `LLM_TEMPERATURE`: Temperature for LLM responses (0.0-2.0).
+- `GOOGLE_API_KEY`: Google API key (alternative to OpenAI, for Gemini LLM operations)
+
+**Model Configuration:**
+- `MODEL_NAME`: Model name to use for LLM operations (e.g., `gpt-4.1-mini` for OpenAI or `gemini-2.5-flash` for Gemini)
+- `SMALL_MODEL_NAME`: Small model name to use for lighter LLM operations (e.g., `gpt-4.1-nano` for OpenAI or `gemini-2.5-flash-lite-preview-06-17` for Gemini)
+- `LLM_TEMPERATURE`: Temperature for LLM responses (0.0-2.0)
 - `AZURE_OPENAI_ENDPOINT`: Optional Azure OpenAI LLM endpoint URL
 - `AZURE_OPENAI_DEPLOYMENT_NAME`: Optional Azure OpenAI LLM deployment name
 - `AZURE_OPENAI_API_VERSION`: Optional Azure OpenAI LLM API version
@@ -198,6 +203,40 @@ This will start both the Neo4j database and the Graphiti MCP server. The Docker 
 - Connects to the Neo4j container using the environment variables
 - Exposes the server on port 8000 for HTTP-based SSE transport
 - Includes a healthcheck for Neo4j to ensure it's fully operational before starting the MCP server
+
+### Using Google Gemini
+
+The Graphiti MCP server supports Google Gemini as an alternative to OpenAI. To use Gemini:
+
+1. **Set up your environment variables** (in `.env` file or directly):
+   ```bash
+   # Use Google Gemini instead of OpenAI
+   GOOGLE_API_KEY=your_google_api_key_here
+   MODEL_NAME=gemini-2.5-flash
+   SMALL_MODEL_NAME=gemini-2.5-flash-lite-preview-06-17
+   
+   # Neo4j configuration (same as before)
+   NEO4J_URI=bolt://localhost:7687
+   NEO4J_USER=neo4j
+   NEO4J_PASSWORD=demodemo
+   ```
+
+2. **Run with uv**:
+   ```bash
+   uv run graphiti_mcp_server.py --transport sse
+   ```
+
+3. **Run with Docker Compose**:
+   ```bash
+   docker compose up
+   ```
+
+The server will automatically detect the presence of `GOOGLE_API_KEY` and use Gemini for:
+- LLM operations (text generation, entity extraction)
+- Embeddings (text-embedding-001 model)
+- Cross-encoding/reranking (using gemini-2.5-flash-lite-preview-06-17)
+
+**Note**: To get a Google API key, visit [Google AI Studio](https://aistudio.google.com/app/apikey) and create an API key for the Gemini API.
 
 ## Integrating with MCP Clients
 
