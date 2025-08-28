@@ -14,33 +14,32 @@ from typing import Any, TypedDict, cast
 
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from dotenv import load_dotenv
-from mcp.server.fastmcp import FastMCP
-from openai import AsyncAzureOpenAI
-from pydantic import BaseModel, Field
-
 from graphiti_core import Graphiti
 from graphiti_core.edges import EntityEdge
 from graphiti_core.embedder.azure_openai import AzureOpenAIEmbedderClient
 from graphiti_core.embedder.client import EmbedderClient
+from graphiti_core.embedder.gemini import GeminiEmbedder, GeminiEmbedderConfig
 from graphiti_core.embedder.openai import OpenAIEmbedder, OpenAIEmbedderConfig
 from graphiti_core.llm_client import LLMClient
 from graphiti_core.llm_client.azure_openai_client import AzureOpenAILLMClient
 from graphiti_core.llm_client.config import LLMConfig
-from graphiti_core.llm_client.openai_client import OpenAIClient
 from graphiti_core.llm_client.gemini_client import GeminiClient
-from graphiti_core.embedder.gemini import GeminiEmbedder, GeminiEmbedderConfig
+from graphiti_core.llm_client.openai_client import OpenAIClient
+from mcp.server.fastmcp import FastMCP
+from openai import AsyncAzureOpenAI
+from pydantic import BaseModel, Field
+
 # Import with try/except to handle potential missing Gemini support
 try:
-    from graphiti_core.cross_encoder.gemini_reranker_client import GeminiRerankerClient
+    from graphiti_core.cross_encoder.gemini_reranker_client import \
+        GeminiRerankerClient
     GEMINI_RERANKER_AVAILABLE = True
 except ImportError:
     GEMINI_RERANKER_AVAILABLE = False
     GeminiRerankerClient = None
 from graphiti_core.nodes import EpisodeType, EpisodicNode
 from graphiti_core.search.search_config_recipes import (
-    NODE_HYBRID_SEARCH_NODE_DISTANCE,
-    NODE_HYBRID_SEARCH_RRF,
-)
+    NODE_HYBRID_SEARCH_NODE_DISTANCE, NODE_HYBRID_SEARCH_RRF)
 from graphiti_core.search.search_filters import SearchFilters
 from graphiti_core.utils.maintenance.graph_data_operations import clear_data
 
@@ -389,7 +388,8 @@ class GraphitiLLMConfig(BaseModel):
             )
         elif self.api_key is not None:
             # Default to OpenAI reranker for non-Gemini setups
-            from graphiti_core.cross_encoder.openai_reranker_client import OpenAIRerankerClient
+            from graphiti_core.cross_encoder.openai_reranker_client import \
+                OpenAIRerankerClient
             return OpenAIRerankerClient(
                 config=LLMConfig(
                     api_key=self.api_key,

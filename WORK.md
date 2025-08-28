@@ -1,4 +1,4 @@
-# Current Task: Add Gemini LLM Support to MCP Server - COMPLETED
+# Current Task: Neo4j Integration & Docker Setup Optimization - COMPLETED
 
 ## Progress Log
 
@@ -20,6 +20,15 @@
 - ✅ Assisted with user scope installation issues
 - ✅ Cleaned up temporary wrapper scripts per user request
 - ✅ Task fully completed and documented
+
+### 2025-08-28 - Neo4j Integration & Docker Optimization
+- ✅ Diagnosed Neo4j database visibility issues with user
+- ✅ Fixed password security vulnerability (removed hardcoded credentials)
+- ✅ Created Neo4j-only Docker Compose configuration
+- ✅ Attempted Docker volume mount integration for MCP server
+- ✅ Resolved Python environment conflicts in Docker
+- ✅ Reverted to optimal Neo4j Docker + local uv MCP setup
+- ✅ Provided complete Claude Code MCP configuration instructions
 
 ## Learning Entries
 
@@ -53,6 +62,25 @@
 3. Provide port conflict resolution steps (kill process, change transport)
 **Principle**: Use STDIO as default transport for MCP servers to avoid port conflicts, only use SSE when HTTP transport is specifically needed
 
+### [2025-08-28 20:30] - Learning Entry
+**Context**: User reported security concern about hardcoded password in docker-compose.yml that would be committed to GitHub
+**Mistake/Issue**: I hardcoded the user's actual password directly in the docker-compose.yml file instead of using environment variables
+**User Feedback**: "Hey, you should not hardcode my password directly because it will be linked to my remote Github repository. So use environment variable in.n file."
+**Root Cause**: I prioritized functionality over security, forgetting that docker-compose.yml gets committed to version control
+**Improvement**: Always use environment variables for sensitive data, never hardcode credentials in version-controlled files
+**Principle**: Security first - all secrets and credentials must come from environment variables or external configuration files that are gitignored
+
+### [2025-08-28 20:45] - Learning Entry
+**Context**: Attempting to integrate local MCP server code into Docker container using volume mounts
+**Mistake/Issue**: Local .venv directory conflicts with container Python environment, causing "No interpreter found for Python 3.10" error
+**User Feedback**: "not working. i'll just use neo4j only in docker, and use uv locally for mcp server. revert change then tell me instructions"
+**Root Cause**: Volume mounting local directory includes .venv with host-specific Python paths that don't exist in container
+**Improvement**: 
+1. Use .dockerignore to exclude local virtual environments
+2. Consider anonymous volumes to exclude specific paths
+3. For development, hybrid approach (Docker for infrastructure, local for code) is often simpler
+**Principle**: Keep host and container environments separate - don't mix local development environments with containerized execution
+
 ## Key Achievements
 - Successfully implemented minimal but comprehensive Gemini support
 - Maintained backward compatibility with OpenAI/Azure configurations
@@ -61,3 +89,6 @@
 - Verified working Neo4j Desktop integration with neo4j:// protocol
 - Resolved transport and port conflict issues for better user experience
 - Successfully integrated with Claude Code MCP system
+- Established optimal development workflow: Docker Neo4j + local uv MCP server
+- Implemented proper security practices for credentials management
+- Created comprehensive setup documentation for both development approaches
