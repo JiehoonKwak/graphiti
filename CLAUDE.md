@@ -11,7 +11,8 @@ Key features:
 - Bi-temporal data model with explicit tracking of event occurrence times
 - Hybrid retrieval combining semantic embeddings, keyword search (BM25), and graph traversal
 - Support for custom entity definitions via Pydantic models
-- Integration with Neo4j and FalkorDB as graph storage backends
+- Integration with Neo4j, FalkorDB, Kuzu, and Amazon Neptune as graph storage backends
+- MCP (Model Context Protocol) server for AI assistant integration
 
 ## Development Commands
 
@@ -59,6 +60,31 @@ uv sync
 
 # Run with Docker Compose
 docker-compose up
+
+# Run MCP server directly (requires Neo4j running)
+uv run python graphiti_mcp_server.py
+```
+
+### Running Single Tests
+
+```bash
+# Run specific test file
+pytest tests/test_specific_file.py
+
+# Run specific test method
+pytest tests/test_file.py::test_method_name
+
+# Run only integration tests (require database)
+pytest tests/ -k "_int"
+
+# Run only unit tests
+pytest tests/ -k "not _int"
+
+# Run tests with verbose output
+pytest -v tests/
+
+# Run tests in parallel (faster)
+pytest -n auto tests/
 ```
 
 ## Code Architecture
@@ -84,6 +110,7 @@ docker-compose up
 
 - **MCP Implementation**: `graphiti_mcp_server.py` - Model Context Protocol server for AI assistants
 - **Docker Support**: Containerized deployment with Neo4j
+- **Usage Guidelines**: `docs/cursor_rules.md` - Best practices for MCP integration
 
 ## Testing
 
@@ -107,6 +134,8 @@ docker-compose up
 - **FalkorDB**: Version 1.1.2+ as alternative backend
   - Database name defaults to `default_db` (hardcoded in FalkorDriver)
   - Override by passing `database` parameter to driver constructor
+- **Kuzu**: Version 0.11.2+ as lightweight embedded option
+- **Amazon Neptune**: Cloud-managed graph database with OpenSearch integration
 
 ## Development Guidelines
 
@@ -149,11 +178,56 @@ make check
 
 The codebase supports multiple LLM providers but works best with services supporting structured output (OpenAI, Gemini). Other providers may cause schema validation issues, especially with smaller models.
 
+Supported providers:
+- **OpenAI**: Full support including Azure OpenAI (requires v1 API opt-in for structured outputs)
+- **Google Gemini**: Full support with structured outputs
+- **Anthropic**: Supported via `anthropic` extra dependency
+- **Groq**: Supported via `groq` extra dependency
+
+### Development Workflow Patterns
+
+#### Core Library Development
+The main entry point is `graphiti_core/graphiti.py` which orchestrates:
+1. **Data Ingestion**: Episodes are processed through LLM clients for entity extraction
+2. **Graph Storage**: Entities and edges are persisted via database drivers
+3. **Search Operations**: Hybrid retrieval combines semantic, keyword (BM25), and graph traversal
+4. **Temporal Operations**: Bi-temporal model tracks both occurrence and ingestion times
+
+#### Adding New Database Drivers
+1. Implement the `Driver` interface from `graphiti_core/driver/driver.py`
+2. Follow patterns in existing drivers (`neo4j_driver.py`, `falkordb_driver.py`)
+3. Add database-specific dependencies to `pyproject.toml` optional dependencies
+4. Add integration tests with `_int` suffix in test file names
+
 ### MCP Server Usage Guidelines
 
-When working with the MCP server, follow the patterns established in `mcp_server/cursor_rules.md`:
+When working with the MCP server, follow the patterns established in `mcp_server/docs/cursor_rules.md`:
 
-- Always search for existing knowledge before adding new information
-- Use specific entity type filters (`Preference`, `Procedure`, `Requirement`)
-- Store new information immediately using `add_memory`
-- Follow discovered procedures and respect established preferences
+- **Always search first**: Use `search_nodes` and `search_facts` tools before beginning work
+- **Filter by entity type**: Specify `Preference`, `Procedure`, or `Requirement` for targeted results
+- **Save immediately**: Use `add_memory` to capture new requirements and preferences right away
+- **Be explicit about updates**: Only add what's changed or new to the graph
+- **Stay consistent**: Respect discovered preferences and follow established procedures
+
+### Project Structure Insights
+
+```
+graphiti/
+├── graphiti_core/           # Core library - main development focus
+│   ├── graphiti.py         # Primary orchestration class
+│   ├── driver/             # Database abstraction layer
+│   ├── llm_client/         # LLM provider integrations
+│   ├── embedder/           # Embedding provider integrations  
+│   ├── search/             # Hybrid search implementation
+│   ├── prompts/            # LLM prompt templates
+│   └── utils/              # Maintenance and utility operations
+├── server/                 # FastAPI REST API service
+│   ├── graph_service/      # Main FastAPI application
+│   └── routers/            # API endpoint definitions
+├── mcp_server/            # Model Context Protocol server
+│   ├── graphiti_mcp_server.py  # MCP implementation
+│   └── docs/cursor_rules.md    # MCP usage guidelines
+└── tests/                 # Comprehensive test suite
+    ├── evals/             # End-to-end evaluation scripts
+    └── *_int*             # Integration tests (require database)
+```
