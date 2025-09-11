@@ -13,7 +13,7 @@
   - _Best practice:_ Split very long requirements into shorter, logical chunks.
 - **Be explicit if something is an update to existing knowledge.** Only add what's changed or new to the graph.
 - **Document procedures clearly:** When you discover how a user wants things done, record it as a procedure.
-- **Record factual relationships:** When you learn about connections between entities, store these as facts.
+- **Record factual relationships:** When youX learn about connections between entities, store these as facts.
 - **Be specific with categories:** Label preferences and procedures with clear categories for better retrieval later.
 
 ### During Your Work
