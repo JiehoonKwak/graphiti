@@ -35,6 +35,21 @@ or
 gh repo clone getzep/graphiti
 ```
 
+### ⚡ New: Docker-based Setup with Latest Graphiti (v0.30.0pre0)
+
+The recommended way to run the Graphiti MCP server is using Docker Compose, which provides:
+- **Latest Graphiti version**: 0.30.0pre0 with all recent improvements
+- **Automatic startup**: LaunchAgent integration for macOS auto-startup
+- **Simplified deployment**: All dependencies managed via containers
+- **Data persistence**: Neo4j volumes automatically preserved during updates
+
+```bash
+cd graphiti/mcp_server
+docker-compose up --build
+```
+
+For production use with auto-startup, see [Auto-Startup Configuration](#auto-startup-configuration).
+
 ### For Claude Desktop and other `stdio` only clients
 
 1. Note the full path to this directory.
@@ -63,9 +78,17 @@ cd graphiti && pwd
 
 ### Prerequisites
 
-1. Ensure you have Python 3.10 or higher installed.
-2. A running Neo4j database (version 5.26 or later required)
-3. OpenAI API key for LLM operations
+1. **Docker Setup (Recommended)**:
+   - Docker Desktop installed and running
+   - Docker Compose available (included with Docker Desktop)
+
+2. **Manual Setup**:
+   - Python 3.10 or higher installed
+   - A running Neo4j database (version 5.26 or later required)
+
+3. **Required for both setups**:
+   - OpenAI API key for LLM operations
+   - `uv` package manager for dependency management
 
 ### Setup
 
@@ -390,6 +413,62 @@ GRAPHITI_TELEMETRY_ENABLED=false
 ```
 
 For complete details about what's collected and why, see the [Telemetry section in the main Graphiti README](../README.md#telemetry).
+
+## Auto-Startup Configuration
+
+### macOS LaunchAgent Setup
+
+For automatic startup of the Graphiti MCP server on macOS, the repository includes a LaunchAgent configuration:
+
+1. **LaunchAgent Setup** (automatically configured):
+   ```bash
+   # The LaunchAgent plist is automatically installed at:
+   # ~/Library/LaunchAgents/com.jiehoonk.graphiti-mcp.plist
+
+   # Load the LaunchAgent
+   launchctl load -w ~/Library/LaunchAgents/com.jiehoonk.graphiti-mcp.plist
+
+   # Check status
+   launchctl list | grep graphiti-mcp
+   ```
+
+2. **Startup Script**:
+   The included `start_graphiti.sh` script handles:
+   - Docker daemon availability checking with 2-second polling intervals
+   - Automatic service restart on failure
+   - Comprehensive logging to `~/Library/Logs/graphiti-mcp.log`
+
+3. **Health Monitoring**:
+   Use the included health check script:
+   ```bash
+   ./healthcheck.sh          # Single health check
+   ./healthcheck.sh monitor  # Continuous monitoring
+   ```
+
+### Model Configuration Notes
+
+**Important**: This setup uses GPT-4.1 models instead of GPT-5 models due to compatibility issue #878 (temperature parameter incompatibility). The configuration includes:
+
+- `MODEL_NAME=gpt-4.1-mini`
+- `SMALL_MODEL_NAME=gpt-4.1-nano`
+
+If you need GPT-5 compatibility, use a direct installation rather than the Docker setup.
+
+### Version Information
+
+- **Graphiti Core**: v0.30.0pre0 (latest features and improvements)
+- **Neo4j**: v5.26.0 (enterprise edition with health checks)
+- **Docker Compose**: Latest (version field removed as obsolete)
+- **Python**: 3.12 (in Docker containers)
+- **Package Manager**: uv (fast, modern Python package management)
+
+### Troubleshooting
+
+For migration and troubleshooting guidance, see [MIGRATION.md](MIGRATION.md) which includes:
+- Common error messages and solutions
+- Health check commands
+- Rollback procedures
+- Performance optimization tips
 
 ## License
 

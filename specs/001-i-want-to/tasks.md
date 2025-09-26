@@ -37,52 +37,52 @@
 - All paths assume mcp_server/ as working directory
 
 ## Phase 3.1: Setup & Prerequisites
-- [ ] T001 Verify prerequisites (Docker, uv, existing configs) per quickstart.md
-- [ ] T002 [P] Create backup of existing `.env` file with timestamp
-- [ ] T003 [P] Create backup of existing `docker-compose.yml` file
-- [ ] T004 [P] Create backup of LaunchAgent plist `/Users/jiehoonk/Library/LaunchAgents/com.jiehoonk.graphiti-mcp.plist`
-- [ ] T005 Stop existing Docker services with `docker-compose down`
+- [x] T001 Verify prerequisites (Docker, uv, existing configs) per quickstart.md
+- [x] T002 [P] Create backup of existing `.env` file with timestamp
+- [x] T003 [P] Create backup of existing `docker-compose.yml` file
+- [x] T004 [P] Create backup of LaunchAgent plist `/Users/jiehoonk/Library/LaunchAgents/com.jiehoonk.graphiti-mcp.plist`
+- [x] T005 Stop existing Docker services with `docker-compose down`
 
 ## Phase 3.2: Configuration Validation Tests (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These validation tests MUST be written and MUST FAIL before configuration changes**
-- [ ] T006 [P] Contract validation test for docker-compose.yml in `validate_compose.py`
-- [ ] T007 [P] Contract validation test for .env variables in `validate_env.py`
-- [ ] T008 [P] Contract validation test for LaunchAgent plist in `validate_plist.py`
-- [ ] T009 [P] Integration test for Docker build process in `test_docker_build.py`
-- [ ] T010 [P] Integration test for service health checks in `test_service_health.py`
+- [x] T006 [P] Contract validation test for docker-compose.yml in `validate_compose.py`
+- [x] T007 [P] Contract validation test for .env variables in `validate_env.py`
+- [x] T008 [P] Contract validation test for LaunchAgent plist in `validate_plist.py`
+- [x] T009 [P] Integration test for Docker build process in `test_docker_build.py`
+- [x] T010 [P] Integration test for service health checks in `test_service_health.py`
 
 ## Phase 3.3: Core Configuration Updates (ONLY after validation tests fail)
-- [ ] T011 Update `docker-compose.yml` - Neo4j service with version 5.26.0 and health check
-- [ ] T012 Update `docker-compose.yml` - Graphiti MCP service with local build and dependencies
-- [ ] T013 Update `docker-compose.yml` - Volume configurations preserving neo4j_data and neo4j_logs
-- [ ] T014 Update `.env` - Model configuration with GPT-5 fallback documentation
-- [ ] T015 Update `.env` - Preserve GROUP_ID=default and existing database credentials
-- [ ] T016 Update `Dockerfile` - Ensure uv sync uses graphiti-core 0.30.0pre0
-- [ ] T017 [P] Create `start_graphiti.sh` startup script with Docker daemon polling
-- [ ] T018 [P] Create `healthcheck.sh` script for service health validation
+- [x] T011 Update `docker-compose.yml` - Neo4j service with version 5.26.0 and health check
+- [x] T012 Update `docker-compose.yml` - Graphiti MCP service with local build and dependencies
+- [x] T013 Update `docker-compose.yml` - Volume configurations preserving neo4j_data and neo4j_logs
+- [x] T014 Update `.env` - Model configuration with GPT-5 fallback documentation
+- [x] T015 Update `.env` - Preserve GROUP_ID=default and existing database credentials
+- [x] T016 Update `Dockerfile` - Ensure uv sync uses graphiti-core 0.30.0pre0
+- [x] T017 [P] Create `start_graphiti.sh` startup script with Docker daemon polling
+- [x] T018 [P] Create `healthcheck.sh` script for service health validation
 
 ## Phase 3.4: LaunchAgent Integration
-- [ ] T019 Update LaunchAgent plist with correct `start_graphiti.sh` path
-- [ ] T020 Set executable permissions on `start_graphiti.sh` (chmod +x)
-- [ ] T021 Update LaunchAgent WorkingDirectory to current mcp_server path
-- [ ] T022 Test Docker daemon polling logic in startup script
+- [x] T019 Update LaunchAgent plist with correct `start_graphiti.sh` path
+- [x] T020 Set executable permissions on `start_graphiti.sh` (chmod +x)
+- [x] T021 Update LaunchAgent WorkingDirectory to current mcp_server path
+- [x] T022 Test Docker daemon polling logic in startup script
 
 ## Phase 3.5: Validation & Testing
-- [ ] T023 [P] Validate docker-compose.yml syntax with `docker-compose config`
-- [ ] T024 [P] Validate .env variables match contract requirements
-- [ ] T025 Test Docker image build process with `docker build -t graphiti-mcp-local .`
-- [ ] T026 Test service startup with `docker-compose up --build`
-- [ ] T027 Verify Neo4j health endpoint http://localhost:7474
-- [ ] T028 Verify MCP server health endpoint http://localhost:8000
-- [ ] T029 Test LaunchAgent loading with `launchctl load`
-- [ ] T030 Test auto-startup behavior after LaunchAgent configuration
+- [x] T023 [P] Validate docker-compose.yml syntax with `docker-compose config`
+- [x] T024 [P] Validate .env variables match contract requirements
+- [x] T025 Test Docker image build process with `docker build -t graphiti-mcp-local .`
+- [x] T026 Test service startup with `docker-compose up --build`
+- [x] T027 Verify Neo4j health endpoint http://localhost:7474
+- [x] T028 Verify MCP server health endpoint http://localhost:8000
+- [x] T029 Test LaunchAgent loading with `launchctl load`
+- [x] T030 Test auto-startup behavior after LaunchAgent configuration
 
 ## Phase 3.6: Polish & Documentation
-- [ ] T031 [P] Create migration troubleshooting guide in `MIGRATION.md`
-- [ ] T032 [P] Update README.md with new version information and startup instructions
-- [ ] T033 Verify existing Neo4j data volumes are accessible and GROUP_ID consistency
-- [ ] T034 Test rollback procedure using backup files
-- [ ] T035 Document GPT-5 compatibility issue and model fallback in comments
+- [x] T031 [P] Create migration troubleshooting guide in `MIGRATION.md`
+- [x] T032 [P] Update README.md with new version information and startup instructions
+- [x] T033 Verify existing Neo4j data volumes are accessible and GROUP_ID consistency
+- [x] T034 Test rollback procedure using backup files
+- [x] T035 Document GPT-5 compatibility issue and model fallback in comments
 
 ## Dependencies
 - Prerequisites (T001-T005) before validation tests (T006-T010)

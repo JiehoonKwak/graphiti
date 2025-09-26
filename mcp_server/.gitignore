@@ -1,0 +1,22 @@
+# Personal configuration and runtime files
+.env.local
+*.backup.*
+logs/
+tmp/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Python virtual environment (if created locally)
+.venv/
+__pycache__/
+
+# Docker
+.dockerignore
+
+# Personal notes (optional)
+PERSONAL_NOTES.md
