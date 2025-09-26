@@ -1,0 +1,64 @@
+# Environment Configuration Validation Schema
+# Validates .env file structure and required variables
+
+required_variables:
+  NEO4J_URI:
+    pattern: "^bolt://[a-zA-Z0-9.-]+:\\d+$"
+    example: "bolt://localhost:7687"
+    description: "Neo4j database connection URI"
+
+  NEO4J_USER:
+    pattern: "^[a-zA-Z0-9_]+$"
+    example: "neo4j"
+    description: "Neo4j database username"
+
+  NEO4J_PASSWORD:
+    min_length: 6
+    example: "demodemo"
+    description: "Neo4j database password"
+
+  OPENAI_API_KEY:
+    pattern: "^sk-[a-zA-Z0-9-_]{48,}$"
+    description: "OpenAI API key for LLM operations"
+    security: "sensitive"
+
+  MODEL_NAME:
+    allowed_values: ["gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o-mini"]
+    default: "gpt-4.1-mini"
+    description: "Primary LLM model identifier"
+
+  SMALL_MODEL_NAME:
+    allowed_values: ["gpt-4.1-nano", "gpt-4.1-mini"]
+    default: "gpt-4.1-nano"
+    description: "Fallback model for smaller operations"
+
+optional_variables:
+  GROUP_ID:
+    pattern: "^[a-zA-Z0-9_-]+$"
+    default: "default"
+    description: "Graphiti namespace identifier"
+
+  GRAPHITI_TELEMETRY_ENABLED:
+    allowed_values: ["true", "false"]
+    default: "false"
+    description: "Enable/disable telemetry collection"
+
+  SEMAPHORE_LIMIT:
+    pattern: "^\\d+$"
+    default: "10"
+    description: "Concurrent operation limit"
+
+  OPENAI_BASE_URL:
+    pattern: "^https?://[a-zA-Z0-9.-]+.*$"
+    description: "Custom OpenAI endpoint URL"
+
+validation_rules:
+  - no_gpt5_models: "GPT-5 models not supported (see issue #878)"
+  - model_compatibility: "Ensure models are compatible with Graphiti 0.30.0pre0"
+  - preserve_group_id: "GROUP_ID must match existing data for continuity"
+  - env_file_format: "Variables must use KEY=value format with no spaces around ="
+
+migration_checks:
+  - existing_env_backup: "Create .env.backup before modifications"
+  - variable_continuity: "Preserve existing values during upgrade"
+  - model_fallback_chain: "Document GPT-5 → GPT-4.1-mini → GPT-4.1-nano fallback"

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- LaunchAgent Configuration Contract -->
+<!-- Validates macOS plist structure and requirements -->
+<plist version="1.0">
+<dict>
+    <!-- Required Keys -->
+    <key>Label</key>
+    <string>com.jiehoonk.graphiti-mcp</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/jiehoonk/DevHub/sideprojects/graphiti/mcp_server/start_graphiti.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/jiehoonk/DevHub/sideprojects/graphiti/mcp_server</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- Environment Setup -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+
+    <!-- Optional: Logging -->
+    <key>StandardOutPath</key>
+    <string>/tmp/graphiti-mcp.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/tmp/graphiti-mcp.error.log</string>
+
+    <!-- Validation Contract Rules -->
+    <!--
+    REQUIRED_VALIDATIONS:
+    - Label must be unique and follow reverse DNS format
+    - ProgramArguments[0] must be executable start_graphiti.sh script
+    - WorkingDirectory must be absolute path to mcp_server directory
+    - RunAtLoad=true ensures auto-start on system boot
+    - KeepAlive=true enables restart on failure
+    - PATH must include Docker and system tools locations
+    - Script must handle Docker daemon readiness polling
+    - Error handling must include user notification system
+
+    SECURITY_REQUIREMENTS:
+    - Script permissions must be 755 (executable)
+    - No sensitive credentials in plist file
+    - Log files must be in /tmp or user-accessible location
+    - Working directory must be user-writable
+
+    COMPATIBILITY_REQUIREMENTS:
+    - macOS LaunchAgent format compliance
+    - Docker Desktop integration compatibility
+    - User session context (not system-wide daemon)
+    -->
+</dict>
+</plist>
