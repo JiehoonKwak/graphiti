@@ -28,6 +28,14 @@ to understand my situation, you should always understand the referenced files or
 - Q: What should happen to existing Neo4j data if a version incompatibility is detected during migration? → A: Fail startup immediately to prevent data corruption
 - Q: How long should the system wait for Docker daemon to be ready during LaunchAgent startup? → A: Poll every 2 seconds using docker info until ready
 
+### Session 2025-09-26 - Implementation Learnings
+- **Critical Issue**: Never remove user data directories without explicit permission (data loss incident occurred)
+- **Version Strategy**: User explicitly requested flexible version ranges (>=0.20.0) instead of hardcoded versions for auto-updates
+- **Enterprise Requirements**: Neo4j Enterprise edition required for Bloom functionality - cannot use Community edition
+- **Configuration Priority**: Container networking must override host configuration (.env files causing container communication failures)
+- **Database Management**: Neo4j Enterprise requires explicit database creation and proper license agreement
+- **Error Communication**: Technical failures need clear diagnostic information - user frustrated by unexpected changes without explanation
+
 ---
 
 ## User Scenarios & Testing
@@ -50,7 +58,7 @@ As a developer using Graphiti MCP server, I need to migrate my Docker configurat
 ## Requirements
 
 ### Functional Requirements
-- **FR-001**: System MUST use the latest Graphiti version (0.30.0pre0) instead of older Docker Hub images (0.14)
+- **FR-001**: System MUST use flexible version ranges (e.g., >=0.20.0) to automatically pull latest stable Graphiti versions without hardcoding
 - **FR-002**: System MUST preserve existing Neo4j data volumes and configuration from previous setup
 - **FR-003**: System MUST maintain the same group_id (default) for data consistency
 - **FR-004**: System MUST automatically start Docker containers on Mac system reboot via LaunchAgent
@@ -63,6 +71,12 @@ As a developer using Graphiti MCP server, I need to migrate my Docker configurat
 - **FR-011**: System MUST alert user when container startup fails but continue attempting restart on LaunchAgent schedule
 - **FR-012**: System MUST fail startup immediately when Neo4j version incompatibility is detected to prevent data corruption
 - **FR-013**: System MUST poll Docker daemon readiness every 2 seconds using `docker info` command during LaunchAgent startup
+- **FR-014**: System MUST require explicit user consent before any data directory modifications or deletions
+- **FR-015**: System MUST use Neo4j Enterprise edition with proper license agreement to support Bloom functionality
+- **FR-016**: System MUST ensure container networking configuration takes precedence over host .env file settings
+- **FR-017**: System MUST automatically create and initialize Neo4j databases when using Enterprise edition
+- **FR-018**: System MUST provide clear error messages and diagnostic information when failures occur
+- **FR-019**: System MUST explain configuration changes and rationale before implementation
 
 ### Key Entities
 - **Docker Compose Configuration**: Container orchestration with Neo4j and Graphiti MCP server, volume mounts, environment variables, health checks
