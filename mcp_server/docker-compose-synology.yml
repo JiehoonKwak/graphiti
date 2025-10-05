@@ -13,8 +13,6 @@ services:
     volumes:
       - /volume1/docker/graphiti/data:/data
       - /volume1/docker/graphiti/logs:/logs
-      - /volume1/docker/graphiti/import:/var/lib/neo4j/import
-      - /volume1/docker/graphiti/plugins:/plugins
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
       interval: 1s
