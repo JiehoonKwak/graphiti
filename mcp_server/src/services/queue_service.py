@@ -130,13 +130,15 @@ class QueueService:
                 logger.info(f'Processing episode {uuid} for group {group_id}')
 
                 # Process the episode using the graphiti client
+                from datetime import datetime
+
                 await self._graphiti_client.add_episode(
                     name=name,
                     episode_body=content,
                     source_description=source_description,
-                    episode_type=episode_type,
+                    source=episode_type,
                     group_id=group_id,
-                    reference_time=None,  # Let graphiti handle timing
+                    reference_time=datetime.now(),
                     entity_types=entity_types,
                     uuid=uuid,
                 )
