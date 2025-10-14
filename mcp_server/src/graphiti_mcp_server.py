@@ -135,18 +135,18 @@ class GraphitiService:
             # Build custom entity types if configured
             custom_types = None
             if self.config.graphiti.entity_types:
-                custom_types = []
+                custom_types = {}
                 for entity_type in self.config.graphiti.entity_types:
                     # Create a dynamic Pydantic model for each entity type
+                    # Note: Don't add 'name' field as it's a protected attribute in BaseModel
                     entity_model = type(
                         entity_type.name,
                         (BaseModel,),
                         {
-                            '__annotations__': {'name': str},
                             '__doc__': entity_type.description,
                         },
                     )
-                    custom_types.append(entity_model)
+                    custom_types[entity_type.name] = entity_model
             # Also support the existing ENTITY_TYPES if use_custom_entities is set
             elif hasattr(self.config, 'use_custom_entities') and self.config.use_custom_entities:
                 custom_types = ENTITY_TYPES
